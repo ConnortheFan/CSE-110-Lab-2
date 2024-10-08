@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ThemeContext, themes } from "./themeContext";
+import { title } from 'process';
 
 // Wrapper component to provide context
 
@@ -52,61 +53,59 @@ export function ToggleTheme() {
     );
    }
 
-export function NotesList() {
-    const [notesList, setNotesList] = useState([""]);
+   // update this thing somehow
+export function NotesList(props: {likedList: any}) {
+  const [likedList, setLikedList] = useState([""]);
+  
+  function toggleLikedList (){
+    setLikedList(props.likedList)
+    //console.log(likedList);
+  }
 
-    
-    const ul = document.createElement("ul");
-
-    for (let i = 0; i < notesList.length; i++) {
-        var li = document.createElement('li');
-        li.appendChild(document.createTextNode(notesList[i]));
-        ul.appendChild(li);
-    }
-
-    return (
-        <ul id="notesList">
-            {notesList.map((title) => (
-                <li>{title}</li>
-            ))}
-        </ul>
+  useEffect(() => {
+    setLikedList(props.likedList)
+    //console.log(likedList);
+  }, [props.likedList]);
+  return (
+    <ul>
+      {props.likedList.map((title:string) => (
+        <li>
+         {title}
+        </li>
+      ))}
+    </ul>
+      
     )
 }
 
-
+// the console log properly shows the list of titles that are liked
+// how do we display this???
 export function ToggleLike(props: { title: any, notesList: any }) {
     const [like, setLike] = useState(false);
     function addNotesList(title :string) {
-        props.notesList.push(title);
-        //setNotesList(props.notesList);
         console.log(props.notesList);
     }
 
     function toggleLike() {
         setLike(like ? false : true);
-        // toggleNotesList()
+        if (like === true) {
+          const index = props.notesList.indexOf(props.title);
+          if (index > -1) { // only splice array when item is found
+            props.notesList.splice(index, 1); // 2nd parameter means remove one item only
+          }
+          
+        }
+        if (like === false) {
+          props.notesList.push(props.title);
+        }
+        
         addNotesList(props.title)
     }
-
     
-
-    useEffect(() => {
-
-    }
-    )
-        
-
+       
     return (
         <div>
             <button onClick={toggleLike}>{like ? <p>❤️</p> : <p>🤍</p>}</button>
         </div>
     )
 }
-
-// export function NotesList() {  
-//     const [notesList, setNotesList] = useState([""]);
-
-//     return (
-        
-//     )
-// }
