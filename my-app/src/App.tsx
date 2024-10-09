@@ -24,18 +24,17 @@ return (
         <div><textarea></textarea></div>
 
         <div><button type="submit">Create Note</button></div>
-    </form>
-  
-       
-    <ul>
+
+        <ul>
       {likedList.filter((item) => item.like).map((note) => (  
         <li>
          {note.title}
         </li>
       ))}
     </ul>
-
-   
+    </form>
+  
+       
     <div className="notes-grid">
        {dummyNotesList.map((note) => (
          <div
