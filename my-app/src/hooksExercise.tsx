@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react';
 import { ThemeContext, themes } from "./themeContext";
 import { title } from 'process';
-
+import { dummyNotesList } from "./constant";
+import "./App"
 // Wrapper component to provide context
 
 
@@ -53,59 +54,31 @@ export function ToggleTheme() {
     );
    }
 
-   // update this thing somehow
-export function NotesList(props: {likedList: any}) {
-  const [likedList, setLikedList] = useState([""]);
-  
-  function toggleLikedList (){
-    setLikedList(props.likedList)
-    //console.log(likedList);
-  }
 
-  useEffect(() => {
-    setLikedList(props.likedList)
-    //console.log(likedList);
-  }, [props.likedList]);
-  return (
-    <ul>
-      {props.likedList.map((title:string) => (
-        <li>
-         {title}
-        </li>
-      ))}
-    </ul>
-      
-    )
-}
-
-// the console log properly shows the list of titles that are liked
-// how do we display this???
-export function ToggleLike(props: { title: any, notesList: any }) {
+export function ToggleLike(props: {note: any, toggleLikedListApp:any }) {
     const [like, setLike] = useState(false);
-    function addNotesList(title :string) {
-        console.log(props.notesList);
-    }
-
+    
     function toggleLike() {
         setLike(like ? false : true);
+        
         if (like === true) {
-          const index = props.notesList.indexOf(props.title);
-          if (index > -1) { // only splice array when item is found
-            props.notesList.splice(index, 1); // 2nd parameter means remove one item only
-          }
           
+          props.note.like = false;
         }
         if (like === false) {
-          props.notesList.push(props.title);
+          props.note.like = true;
         }
         
-        addNotesList(props.title)
     }
     
-       
     return (
+      
         <div>
-            <button onClick={toggleLike}>{like ? <p>❤️</p> : <p>🤍</p>}</button>
+            <button  onClick={() => {
+          toggleLike();
+          props.toggleLikedListApp();
+        }}>{like ? <p>❤️</p> : <p>🤍</p>}</button>
         </div>
+      
     )
 }

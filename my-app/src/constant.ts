@@ -1,4 +1,6 @@
 import { Label } from "./types";
+import React from 'react';
+
 
 export const dummyNotesList = [
     {
@@ -49,6 +51,4 @@ export const dummyNotesList = [
     },
  ]
 
- export const dummyLikesList = [
-    
- ]
+ 
