@@ -3,6 +3,7 @@ import { ThemeContext, themes } from "./themeContext";
 import { title } from 'process';
 import { dummyNotesList } from "./constant";
 import "./App"
+import { Label } from './types';
 // Wrapper component to provide context
 
 
@@ -82,3 +83,26 @@ export function ToggleLike(props: {note: any, toggleLikedListApp:any }) {
       
     )
 }
+
+export function ToggleDelete(props: {setNotes: any, notes: any, note: any, toggleLikedListApp:any }) {
+  const [deleteNote, setDelete] = useState(false);
+  
+  function toggleDelete() {
+      setDelete(true);
+      props.note.like = false;
+      
+  }
+  
+  return (
+    
+      <div>
+          <button  onClick={() => {
+        toggleDelete();
+        props.toggleLikedListApp();
+        props.setNotes(props.notes.filter((noteIter: any) => noteIter !== props.note));
+      }}>x</button>
+      </div>
+    
+  )
+}
+

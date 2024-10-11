@@ -2,56 +2,107 @@ import './App.css';
 import { Label, Note } from "./types"; // Import the Label type from the appropriate module
 import { dummyNotesList } from "./constant"; // Import the dummyNotesList from the appropriate module
 import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react';
-import { ClickCounter, ToggleLike, ToggleTheme } from "./hooksExercise"
+import { ClickCounter, ToggleLike, ToggleTheme, ToggleDelete } from "./hooksExercise"
 import React, { useState, useEffect, useContext } from 'react';
+import { ThemeContext } from './themeContext';
 
 function App() {
 
     const [likedList, setLikedListApp] = useState(dummyNotesList);
     function toggleLikedListApp(){
-      console.log(dummyNotesList);
-      setLikedListApp(dummyNotesList.filter((item) => item.like));
+      console.log(notes);
+      setLikedListApp(notes.filter((item) => item.like));
     }
   
     
+const [notes, setNotes] = useState(dummyNotesList); 
+const initialNote = {
+   id: -1,
+   title: "",
+   content: "",
+   label: Label.other,
+   like: false
+ };
+const [createNote, setCreateNote] = useState(initialNote);
+
+const createNoteHandler = (event: React.FormEvent) => {
+   event.preventDefault();
+   console.log("title: ", createNote.title);
+   console.log("content: ", createNote.content);
+   createNote.id = notes.length + 1;
+   setNotes([createNote, ...notes]);
+   setCreateNote(initialNote);
+ };
+
+ const theme = useContext(ThemeContext);
+  function log() {
+  console.log(theme);
+  };
 return (
-    <div className='app-container'>
-    <ToggleTheme />
+	<div className='app-container' style={{
+    background: theme.background,
+    color: theme.foreground,
+    padding: "20px",
+  }}>
+    <ToggleTheme/>
+  	<form className="note-form" onSubmit={createNoteHandler}>
+    	<div>
+      	<input
+        	placeholder="Note Title"
+        	onChange={(event) =>
+          	setCreateNote({ ...createNote, title: event.target.value })}
+        	required>
+      	</input>
+    	</div>
 
-    <form className="note-form">
-        <div><input placeholder="Note Title"></input></div>
+    	<div>
+      	<textarea
+        	onChange={(event) =>
+          	setCreateNote({ ...createNote, content: event.target.value })}
+        	required>
+      	</textarea>
+    	</div>
 
-        <div><textarea></textarea></div>
+  <div>
+     	<select
+       	onChange={(event) =>
+         	setCreateNote({ ...createNote, label: event.target.value as Label })}
+       	required>
+       	<option value={Label.personal}>Personal</option>
+       	<option value={Label.study}>Study</option>
+       	<option value={Label.work}>Work</option>
+       	<option value={Label.other}>Other</option>
+     	</select>
+   	</div>
 
-        <div><button type="submit">Create Note</button></div>
-
-        <ul>
+    	<div><button onClick={log} type="submit">Create Note</button></div>
+      <ul>
       {likedList.filter((item) => item.like).map((note) => (  
         <li>
          {note.title}
         </li>
       ))}
     </ul>
-    </form>
-  
-       
-    <div className="notes-grid">
-       {dummyNotesList.map((note) => (
-         <div
-           key={note.id}
-           className="note-item">
-           <div className="notes-header">
-                <ToggleLike note={note} toggleLikedListApp={toggleLikedListApp} />
-                <button>x</button>
-           </div>
-           <h2> {note.title} </h2>
-           <p> {note.content} </p>
-           <p> {note.label} </p>
-         </div>
-       ))}
-     </div>
-   </div>
-);
+  	</form>
+
+  	<div className="notes-grid">
+    	{notes.map((note) => (
+      	<div
+        	key={note.id}
+        	className="note-item"
+      	>
+        	<div className="notes-header">
+            <ToggleLike note={note} toggleLikedListApp={toggleLikedListApp} />
+            <ToggleDelete setNotes={setNotes} notes={notes} note={note} toggleLikedListApp={toggleLikedListApp} />
+        	</div>
+        	<h2 contentEditable="true">  {note.title} </h2>
+        	<p contentEditable="true"> {note.content} </p>
+        	<p contentEditable="true" > {note.label} </p>
+      	</div>
+    	))}
+  	</div>
+	</div>  );
+
 }
 
 export default App;
