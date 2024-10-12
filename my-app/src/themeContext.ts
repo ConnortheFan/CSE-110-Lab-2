@@ -1,5 +1,5 @@
 // ThemeContext.ts
-import React from 'react';
+import React, { createContext, useState } from 'react';
 
 export const themes = {
  light: {
@@ -12,5 +12,18 @@ export const themes = {
  },
 };
 
-export const ThemeContext = React.createContext(themes.light);
+export const ThemeContext = createContext(themes.light);
 
+// export const ThemeProvider = ({ }) => {
+//     const [currentTheme, setCurrentTheme] = useState(themes.light);
+
+//     function toggleTheme() {
+//         setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
+//     }
+
+//     return (
+//         <ThemeContext.Provider value = {{ currentTheme }}>
+
+//         </ThemeContext.Provider>
+//     );
+// };

@@ -8,77 +8,71 @@ import { Label } from './types';
 
 
 export function ClickCounter() {
- const [count, setCount] = useState(0);
+    const [count, setCount] = useState(0);
 
- const handleClick = () => {
-   setCount(count + 1);
- };
-
- useEffect(() => {
-   document.title = `You clicked ${count} times`;
- }, [count]);
-
- 
-
- const theme = useContext(ThemeContext);
-return (
-   <div
-     style={{
-       background: theme.background,
-       color: theme.foreground,
-       padding: "20px",
-     }}
-   >
-     <p>You clicked {count} times </p>
-     <button
-       onClick={() => setCount(count + 1)}
-       style={{ background: theme.foreground, color: theme.background }}
-     >
-       Click me
-     </button>
-   </div>
- );
-}
-
-export function ToggleTheme() {
-    const [currentTheme, setCurrentTheme] = useState(themes.light);
-   
-    const toggleTheme = () => {
-      setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
+    const handleClick = () => {
+        setCount(count + 1);
     };
-   
+
+    useEffect(() => {
+        document.title = `You clicked ${count} times`;
+    }, [count]);
+
+    const theme = useContext(ThemeContext);
+    // console.log("Clicker theme: ", theme)
     return (
-      <ThemeContext.Provider value={currentTheme}>
-        <button onClick={toggleTheme}> Toggle Theme </button>
-        <ClickCounter />
-      </ThemeContext.Provider>
+    <div
+        style={{
+        background: theme.background,
+        color: theme.foreground,
+        padding: "20px",
+        }}
+    >
+        <p>You clicked {count} times </p>
+        <button
+            onClick={() => setCount(count + 1)}
+            style={{ background: theme.foreground, color: theme.background }}
+        >
+            Click me
+        </button>
+    </div>
     );
-   }
+    }
+
+export function ToggleTheme(props: {theme: { foreground: string; background: string; }, toggleTheme: () => void}) {
+    return (
+        <ThemeContext.Provider value={props.theme}>
+        <button onClick={() => {
+            props.toggleTheme();
+            // console.log("New Theme")
+            // console.log(props.theme)
+        }}> Toggle Theme </button>
+        <ClickCounter/>
+        </ThemeContext.Provider>
+    );
+}
 
 
 export function ToggleLike(props: {note: any, toggleLikedListApp:any }) {
     const [like, setLike] = useState(false);
     
     function toggleLike() {
-        setLike(like ? false : true);
-        
-        if (like === true) {
-          
-          props.note.like = false;
+        if (like) {
+            props.note.like = false;
+            setLike(false);
+        } else {
+            props.note.like = true;
+            setLike(true);
         }
-        if (like === false) {
-          props.note.like = true;
-        }
-        
     }
     
     return (
       
         <div>
             <button  onClick={() => {
-          toggleLike();
-          props.toggleLikedListApp();
-        }}>{like ? <p>❤️</p> : <p>🤍</p>}</button>
+                toggleLike();
+                props.toggleLikedListApp();
+            }}>{like ? <p>❤️</p> : <p>🤍</p>}</button>
         </div>
       
     )

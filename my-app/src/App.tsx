@@ -4,54 +4,54 @@ import { dummyNotesList } from "./constant"; // Import the dummyNotesList from t
 import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react';
 import { ClickCounter, ToggleLike, ToggleTheme, ToggleDelete } from "./hooksExercise"
 import React, { useState, useEffect, useContext } from 'react';
-import { ThemeContext } from './themeContext';
+import { ThemeContext, themes } from './themeContext';
 
 function App() {
 
-    const [likedList, setLikedListApp] = useState(dummyNotesList);
+    const [likedList, setLikedListApp] = useState(dummyNotesList.filter((item) => item.like));
     function toggleLikedListApp(){
-      console.log(notes);
-      setLikedListApp(notes.filter((item) => item.like));
+        setLikedListApp(notes.filter((item) => item.like));
     }
-  
     
-const [notes, setNotes] = useState(dummyNotesList); 
-const initialNote = {
-   id: -1,
-   title: "",
-   content: "",
-   label: Label.other,
-   like: false
- };
-const [createNote, setCreateNote] = useState(initialNote);
+    const [notes, setNotes] = useState(dummyNotesList); 
+    const initialNote = {
+        id: -1,
+        title: "",
+        content: "",
+        label: Label.other,
+        like: false
+    };
 
-const createNoteHandler = (event: React.FormEvent) => {
-   event.preventDefault();
-   console.log("title: ", createNote.title);
-   console.log("content: ", createNote.content);
-   createNote.id = notes.length + 1;
-   setNotes([createNote, ...notes]);
-   setCreateNote(initialNote);
- };
+    const [createNote, setCreateNote] = useState(initialNote);
+    const createNoteHandler = (event: React.FormEvent) => {
+        event.preventDefault();
+        console.log("title: ", createNote.title);
+        console.log("content: ", createNote.content);
+        createNote.id = notes.length + 1;
+        setNotes([createNote, ...notes]);
+        setCreateNote(initialNote);
+    };
 
- const theme = useContext(ThemeContext);
-  function log() {
-  console.log(theme);
-  };
+    const [theme, setTheme] = useState(themes.light);
+    const toggleTheme = () => {
+        setTheme(theme === themes.light ? themes.dark : themes.light);
+    };
+
 return (
+
 	<div className='app-container' style={{
-    background: theme.background,
-    color: theme.foreground,
-    padding: "20px",
-  }}>
-    <ToggleTheme/>
+        background: theme.background,
+        color: theme.foreground,
+        padding: "20px",
+    }}>
+    <ToggleTheme theme={theme} toggleTheme={toggleTheme}/>
   	<form className="note-form" onSubmit={createNoteHandler}>
     	<div>
       	<input
-        	placeholder="Note Title"
-        	onChange={(event) =>
-          	setCreateNote({ ...createNote, title: event.target.value })}
-        	required>
+            placeholder="Note Title"
+            onChange={(event) =>
+            setCreateNote({ ...createNote, title: event.target.value })}
+            required>
       	</input>
     	</div>
 
@@ -63,7 +63,7 @@ return (
       	</textarea>
     	</div>
 
-  <div>
+    <div>
      	<select
        	onChange={(event) =>
          	setCreateNote({ ...createNote, label: event.target.value as Label })}
@@ -75,13 +75,12 @@ return (
      	</select>
    	</div>
 
-    	<div><button onClick={log} type="submit">Create Note</button></div>
-      <ul>
-      {likedList.filter((item) => item.like).map((note) => (  
-        <li>
-         {note.title}
-        </li>
-      ))}
+    <div><button type="submit">Create Note</button></div>
+    
+    <ul>
+        {likedList.map((note) => (  
+            <li>{note.title}</li>
+        ))}
     </ul>
   	</form>
 
@@ -90,6 +89,11 @@ return (
       	<div
         	key={note.id}
         	className="note-item"
+            style={{
+                background: theme.background,
+                color: theme.foreground,
+                padding: "20px",
+                }}
       	>
         	<div className="notes-header">
             <ToggleLike note={note} toggleLikedListApp={toggleLikedListApp} />
